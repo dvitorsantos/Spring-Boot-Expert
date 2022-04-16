@@ -15,15 +15,13 @@ import java.util.List;
 public class CustomerController {
 
     //customers repository
-    private Customers customers;
+    private Customers repository;
 
-    public CustomerController(Customers customers) {
-        this.customers = customers;
-    }
+    public CustomerController(Customers repository) { this.repository = repository; }
 
     @GetMapping( "{id}")
     public Customer getCustomerById(@PathVariable("id") Integer id) {
-        return customers
+        return repository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "customer not found"));
     }
@@ -31,16 +29,16 @@ public class CustomerController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Customer save(@RequestBody Customer customer) {
-        return customers.save(customer);
+        return repository.save(customer);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
-        customers
+        repository
                 .findById(id)
                 .map(customer -> {
-                    customers.delete(customer);
+                    repository.delete(customer);
                     return customer;
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "customer not found"));
@@ -51,11 +49,11 @@ public class CustomerController {
     public void update(@PathVariable Integer id,
                                  @RequestBody Customer customer) {
 
-        customers
+        repository
                 .findById(id)
                 .map(database_customer -> {
                         customer.setId(database_customer.getId());
-                        customers.save(customer);
+                        repository.save(customer);
                         return database_customer;
                     })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "customer not found"));
@@ -70,6 +68,6 @@ public class CustomerController {
                                             ExampleMatcher.StringMatcher.CONTAINING);
 
         Example example = Example.of(filter, matcher);
-        return customers.findAll(example);
+        return repository.findAll(example);
     }
 }

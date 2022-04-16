@@ -15,15 +15,15 @@ import java.util.List;
 public class ProductController {
 
     //products repository
-    private Products products;
+    private Products repository;
 
-    public ProductController(Products products) {
-        this.products = products;
+    public ProductController(Products repository) {
+        this.repository = repository;
     }
 
     @GetMapping( "{id}")
     public Product getById(@PathVariable("id") Integer id) {
-        return products
+        return repository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "product not found"));
     }
@@ -31,16 +31,16 @@ public class ProductController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Product save(@RequestBody Product product) {
-        return products.save(product);
+        return repository.save(product);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
-        products
+        repository
                 .findById(id)
                 .map(product -> {
-                    products.delete(product);
+                    repository.delete(product);
                     return Void.TYPE;
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "product not found"));
@@ -51,11 +51,11 @@ public class ProductController {
     public void update(@PathVariable Integer id,
                        @RequestBody Product product) {
 
-        products
+        repository
                 .findById(id)
                 .map(database_product -> {
                     product.setId(database_product.getId());
-                    products.save(product);
+                    repository.save(product);
                     return database_product;
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "product not found"));
@@ -70,6 +70,6 @@ public class ProductController {
                         ExampleMatcher.StringMatcher.CONTAINING);
 
         Example example = Example.of(filter, matcher);
-        return products.findAll(example);
+        return repository.findAll(example);
     }
 }
