@@ -12,15 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @RestController
 public class VendasApplication {
-
-    @Bean
-    public CommandLineRunner commandLineRunner (@Autowired Customers customers) {
-        return args -> {
-            Customer customer = new Customer(null, "nome teste");
-            customers.save(customer);
-        };
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(VendasApplication.class, args);
     }
