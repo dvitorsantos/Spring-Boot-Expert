@@ -1,5 +1,7 @@
 package io.github.dvitorsantos.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 @Entity
@@ -13,6 +15,10 @@ public class Customer {
     @Column(name = "name", length = 100)
     private String name;
 
+    @Column(name = "cpf", length = 11)
+    private String cpf;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private List<Request> requests;
 
@@ -32,12 +38,24 @@ public class Customer {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public List<Request> getRequests() {
